@@ -1,0 +1,18 @@
+name: CD Deploy Laravel to Ubuntu
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull Kode & Update Aplikasi
+        run: |
+          cd /var/www/kaskita
+          git pull origin main
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+          php artisan optimize:clear
+          sudo systemctl reload php8.3-fpm
